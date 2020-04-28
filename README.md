@@ -13,7 +13,7 @@ npm install node-red-contrib-value-for
 This nodes can be used to listen if reported sensor values are in configured range for given period of time,
 and if yes - report that fact on output.
 
-This library is similar to (and inspired by) (node-red-contrib-edge-trigger)[https://github.com/eschava/node-red-contrib-edge-trigger]
+This library is similar to (and inspired by) [node-red-contrib-edge-trigger](https://github.com/eschava/node-red-contrib-edge-trigger)
 which you can use to listen for numeric value change "over", "below" or "out of range", but you cannot listen to value change
 "inside the range" or string input. `node-red-contrib-range-for` also adds `for` parameter to listen if value haven't excursed
 from configured range/value for given period of time.
