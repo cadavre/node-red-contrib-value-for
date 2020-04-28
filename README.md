@@ -15,7 +15,7 @@ and if yes - report that fact on output.
 
 This library is similar to (and inspired by) [node-red-contrib-edge-trigger](https://github.com/eschava/node-red-contrib-edge-trigger)
 which you can use to listen for numeric value change "over", "below" or "out of range", but you cannot listen to value change
-"inside the range" or string input. `node-red-contrib-range-for` also adds `for` parameter to listen if value haven't excursed
+"inside the range" or string input. `node-red-contrib-value-for` also adds `for` parameter to listen if value haven't excursed
 from configured range/value for given period of time.
 
 This nodes always does nothing after receiving just a first/single message. It works only as a comparator on message receival.
