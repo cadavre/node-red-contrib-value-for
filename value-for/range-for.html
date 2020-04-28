@@ -1,0 +1,92 @@
+<script type="text/javascript">
+    RED.nodes.registerType('range-for', {
+        category: 'function',
+        color: '#E2D96E',
+        defaults: {
+            name: {value: ""},
+            above: {
+                value: null,
+                required: false,
+                validate: RED.validators.regex(/\d*/)
+            },
+            below: {
+                value: null,
+                required: false,
+                validate: RED.validators.regex(/\d*/)
+            },
+            for: {
+                value: "5",
+                required: true,
+                validate: RED.validators.number()
+            },
+            units: {
+                value: "s",
+                required: true,
+            },
+            continuous: {
+                value: false
+            }
+        },
+        inputs: 1,
+        outputs: 2,
+        icon: "range-for.png",
+        label: function() {
+            if (this.name) {
+                return this.name;
+            } else if (this.above && this.below) {
+                return this.above + '-' + this.below + ' for ' + this.for + this.units;
+            } else if (this.above) {
+                return '>' + this.above + ' for ' + this.for + this.units;
+            } else if (this.below) {
+                return '<' + this.below + ' for ' + this.for + this.units;
+            } else {
+                return 'not configured';
+            }
+        },
+        paletteLabel: "range for"
+    });
+</script>
+
+<script type="text/x-red" data-template-name="range-for">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-above"><i class="fa fa-chevron-up"></i> Above</label>
+        <input type="text" id="node-input-above" placeholder="value">
+    </div>
+    <div class="form-row">
+        <label for="node-input-below"><i class="fa fa-chevron-down"></i> Below</label>
+        <input type="text" id="node-input-below" placeholder="value">
+    </div>
+    <div class="form-row node-type-for">
+        <label for="node-input-below"><i class="fa fa-clock-o"></i> For</label>
+        <input type="text" id="node-input-for" style="text-align:end; width:70px !important">
+        <select id="node-input-units" style="width:140px !important">
+            <option value="ms" data-i18n="range-for.for.ms">Milliseconds</option>
+            <option value="s" data-i18n="range-for.for.s">Seconds</option>
+            <option value="min" data-i18n="range-for.for.m">Minutes</option>
+            <option value="hr" data-i18n="range-for.for.h">Hours</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-continuous" style="display: inline-block; width: auto; vertical-align: top;">
+        <label style="width: auto;" for="node-input-continuous">Trigger for continuous <code>for</code> periods in range.</label></input>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="range-for">
+    <p>This node listens to numeric values in <code>msg.payload</code> input.
+    If reported values are below, above or in given range for
+    defined amount of time – reports a <code>msg.payload: "trigger"</code>
+    (just once) on first output.</p>
+    <p>Any excursion for range will reset the timer – that reports
+    a <code>msg.payload: "reset"</code> to second output.</p>
+    <p>Node accepts only numeric values in <code>msg.payload</code> – other
+    values are ignored.</p>
+    <p>Sending <code>msg.payload: "reset"</code> will reset timer,
+    also triggering second output.</p>
+    <p>Can trigger for continuous <code>for</code> periods if still in range
+    or just once.</p>
+</script>

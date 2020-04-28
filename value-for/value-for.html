@@ -1,0 +1,86 @@
+<script type="text/javascript">
+    RED.nodes.registerType('value-for', {
+        category: 'function',
+        color: '#E2D96E',
+        defaults: {
+            name: {
+                value: ""
+            },
+            value: {
+                value: "",
+                required: true
+            },
+            casesensitive: {
+                value: false
+            },
+            for: {
+                value: "5",
+                required: true,
+                validate: RED.validators.number()
+            },
+            units: {
+                value: "s",
+                required: true,
+            },
+            continuous: {
+                value: false
+            }
+        },
+        inputs: 1,
+        outputs: 2,
+        icon: "value-for.png",
+        label: function() {
+            if (this.name) {
+                return this.name;
+            } else if (this.value) {
+                return this.value + ' for ' + this.for + this.units;
+            } else {
+                return 'value for ' + this.for + this.units;
+            }
+        },
+        paletteLabel: "value for"
+    });
+</script>
+
+<script type="text/x-red" data-template-name="value-for">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-value"><img src="red/images/typedInput/az.svg" style="margin-right: 4px;height: 18px;"> Value</label>
+        <input type="text" id="node-input-value" placeholder="value">
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-casesensitive" style="display: inline-block; width: auto; vertical-align: top;">
+        <label style="width: auto;" for="node-input-casesensitive">Case sensitive</label></input>
+    </div>
+    <div class="form-row node-type-for">
+        <label for="node-input-below"><i class="fa fa-clock-o"></i> For</label>
+        <input type="text" id="node-input-for" style="text-align:end; width:70px !important">
+        <select id="node-input-units" style="width:140px !important">
+            <option value="ms" data-i18n="value-for.for.ms">Milliseconds</option>
+            <option value="s" data-i18n="value-for.for.s">Seconds</option>
+            <option value="min" data-i18n="value-for.for.m">Minutes</option>
+            <option value="hr" data-i18n="value-for.for.h">Hours</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-continuous" style="display: inline-block; width: auto; vertical-align: top;">
+        <label style="width: auto;" for="node-input-continuous">Trigger for continuous <code>for</code> periods in value.</label></input>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="value-for">
+    <p>This node listens to string values in <code>msg.payload</code> input.
+    If reported value is same as configured for defined amount of time –
+    reports a <code>msg.payload: "trigger"</code> (just once) on first output.</p>
+    <p>Node accepts any values but comparison is made between strings.
+    Comparison can be made in case sensitive manner.</p>
+    <p>Any excursion for value will reset the timer – that reports
+    a <code>msg.payload: "reset"</code> to second output.</p>
+    <p>Sending <code>msg.payload: "reset"</code> will reset timer,
+    also triggering second output.</p>
+    <p>Can trigger for continuous <code>for</code> periods if value doesn't change
+    or just once.</p>
+</script>
