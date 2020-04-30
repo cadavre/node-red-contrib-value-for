@@ -4,6 +4,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         this.timeout = null;
         this.valueMatched = false;
+        this.lastValue = null;
 
         if (config.units == "s") { config.for = config.for * 1000; }
         if (config.units == "min") { config.for = config.for * 1000 * 60; }
@@ -21,7 +22,8 @@ module.exports = function(RED) {
                 clearTimeout(node.timeout);
                 node.timeout = null;
                 var msg = {
-                    payload: 'reset'
+                    reset: 1,
+                    payload: node.lastValue
                 }
                 node.send([null, msg]);
             }
@@ -30,7 +32,7 @@ module.exports = function(RED) {
 
         function timerFn() {
             var msg = {
-                payload: 'triggered'
+                payload: node.lastValue
             }
             node.send([msg, null]);
             node.status({});
@@ -44,12 +46,12 @@ module.exports = function(RED) {
                 if (msg.payload === 'reset') {
                     clearTimer();
                 }
-                var current_value = String(msg.payload);
+                var currentValue = String(msg.payload);
                 if (!config.casesensitive) {
-                    current_value = current_value.toLowerCase();
+                    currentValue = currentValue.toLowerCase();
                 }
-                if (current_value !== '') {
-                    if (current_value === config.value) {
+                if (currentValue !== '') {
+                    if (currentValue === config.value) {
                         node.valueMatched = true;
                     } else {
                         node.valueMatched = false;
@@ -62,6 +64,7 @@ module.exports = function(RED) {
                     } else {
                         clearTimer();
                     }
+                    node.lastValue = currentValue;
                 }
             }
         });

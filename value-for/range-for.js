@@ -4,6 +4,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         this.timeout = null;
         this.valueInRange = false;
+        this.lastValue = null;
 
         if (config.units == "s") { config.for = config.for * 1000; }
         if (config.units == "min") { config.for = config.for * 1000 * 60; }
@@ -15,8 +16,10 @@ module.exports = function(RED) {
             if (node.timeout !== null) {
                 clearTimeout(node.timeout);
                 node.timeout = null;
+                node.valueInRange = false;
                 var msg = {
-                    payload: 'reset'
+                    reset: 1,
+                    payload: node.lastValue
                 }
                 node.send([null, msg]);
             }
@@ -25,7 +28,7 @@ module.exports = function(RED) {
 
         function timerFn() {
             var msg = {
-                payload: 'triggered'
+                payload: node.lastValue
             }
             node.send([msg, null]);
             node.status({});
@@ -39,20 +42,28 @@ module.exports = function(RED) {
                 if (msg.payload === 'reset') {
                     clearTimer();
                 }
-                var current_value = Number(msg.payload);
-                if (!isNaN(current_value)) {
-                    if (config.below !== null) {
-                        if (current_value > config.below) {
-                            node.valueInRange = false;
-                        } else {
+                var currentValue = Number(msg.payload);
+                if (!isNaN(currentValue)) {
+                    if (config.below !== null && config.above !== null) {
+                        if (currentValue > config.above && currentValue < config.below) {
                             node.valueInRange = true;
+                        } else {
+                            node.valueInRange = false;
                         }
-                    }
-                    if (config.above !== null) {
-                        if (current_value < config.above) {
-                            node.valueInRange = false;
-                        } else {
-                            node.valueInRange = true;
+                    } else {
+                        if (config.below !== null) {
+                            if (currentValue < config.below) {
+                                node.valueInRange = true;
+                            } else {
+                                node.valueInRange = false;
+                            }
+                        }
+                        if (config.above !== null) {
+                            if (currentValue > config.above) {
+                                node.valueInRange = true;
+                            } else {
+                                node.valueInRange = false;
+                            }
                         }
                     }
                     if (node.valueInRange) {
@@ -63,6 +74,7 @@ module.exports = function(RED) {
                     } else {
                         clearTimer();
                     }
+                    node.lastValue = currentValue;
                 }
             }
         });

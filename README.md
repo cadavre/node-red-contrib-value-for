@@ -46,3 +46,23 @@ Values are compared as strings! Therefor you can choose to make case (in)sensiti
 
 You can configure nodes to report just once after the range/value matched configuration or report continously starting new timers
 each time a value confirming match in range/value is incoming as input. New timer will start only if new message comes in!
+
+## Changelog
+
+#### 0.2.0
+
+* Fixed some values above "below" triggering in_range.
+* Added `msg.payload` to return last reported value.
+* Added `msg.reset = 1` to 2nd output and also `msg.payload` to return last reported value.
+
+#### 0.1.2
+
+* Changed nodes color to violet.
+
+#### 0.1.1
+
+* Minor bugs fixed.
+
+#### 0.1.0
+
+* Initial version.
