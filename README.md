@@ -49,6 +49,11 @@ each time a value confirming match in range/value is incoming as input. New time
 
 ## Changelog
 
+#### 0.2.1
+
+* Fixed config values not being parsed as Numbers that resulted in comparison of Number vs String.
+* Improved node status output.
+
 #### 0.2.0
 
 * Fixed some values above "below" triggering in_range.
