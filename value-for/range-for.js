@@ -10,6 +10,9 @@ module.exports = function(RED) {
         if (config.units == "min") { config.for = config.for * 1000 * 60; }
         if (config.units == "hr") { config.for = config.for * 1000 * 60 * 60; }
 
+        if (config.below == "") { config.below = null; } else { config.below = Number(config.below) }
+        if (config.above == "") { config.above = null; } else { config.above = Number(config.above) }
+
         let node = this;
 
         function clearTimer() {
@@ -31,10 +34,17 @@ module.exports = function(RED) {
                 payload: node.lastValue
             }
             node.send([msg, null]);
-            node.status({});
+            node.status({fill: "green", shape: "dot", text: `${node.lastValue} ${getFormattedNow()}`});
             if (config.continuous) {
                 node.timeout = null;
             }
+        }
+
+        function getFormattedNow() {
+            var now = new Date();
+            const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: '2-digit', day: '2-digit', hour: 'numeric', minute: 'numeric' });
+            const [{ value: month },,{ value: day },,{ value: year },,{ value: hour },,{ value: minute }] = dateTimeFormat.formatToParts(now);
+            return `@ ${day}/${month}/${year} ${hour}:${minute}`;
         }
 
         this.on('input', function(msg) {
@@ -66,15 +76,16 @@ module.exports = function(RED) {
                             }
                         }
                     }
+                    node.lastValue = currentValue;
                     if (node.valueInRange) {
                         if (node.timeout === null) {
                             node.timeout = setTimeout(timerFn, config.for);
-                            node.status({fill: "blue", shape: "dot", text: "in_range"});
+                            node.status({fill: "blue", shape: "dot", text: `${currentValue} ${getFormattedNow()}`});
                         }
                     } else {
                         clearTimer();
+                        node.status({fill: "red", shape: "dot", text: `${currentValue} ${getFormattedNow()}`});
                     }
-                    node.lastValue = currentValue;
                 }
             }
         });
