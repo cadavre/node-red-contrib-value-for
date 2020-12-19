@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 40 60" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" xmlns="http://www.w3.org/2000/svg">
+  <g>
+    <g>
+      <path d="M29.491,34.305c4.441,1.361 7.658,5.364 7.658,10.092c0,5.848 -4.923,10.589 -10.996,10.589c-6.073,0 -10.996,-4.741 -10.996,-10.589c0,-1.826 0.481,-3.543 1.325,-5.044" style="fill:none;stroke:#fff;stroke-width:3.74px;"/>
+      <ellipse cx="25.817" cy="33.979" rx="1.015" ry="0.977" style="fill:none;stroke:#fff;stroke-width:2.81px;"/>
+      <path d="M25.817,42.45c-0.816,0 -7.443,-7.167 -8.36,-6.501c-0.915,0.668 6.331,7.64 6.331,8.455c0,0.816 0.92,1.955 2.029,1.955c1.11,0 2.03,-0.886 2.03,-1.955c0,-1.067 -1.213,-1.954 -2.03,-1.954Z" style="fill:#fff;fill-rule:nonzero;stroke:#fff;stroke-width:0.94px;stroke-linecap:butt;stroke-miterlimit:1.41421;"/>
+    </g>
+  </g>
+  <circle style="fill: rgb(255, 255, 255);" transform="matrix(1, 0, 0, 0.999996, -540.995251, -161.04346)" cx="549.8" cy="168.19" r="3.69"/>
+  <circle style="fill: rgb(255, 255, 255);" transform="matrix(1, 0, 0, 0.999996, -541.25349, -149.766376)" cx="549.8" cy="168.19" r="3.69"/>
+  <circle style="fill: rgb(255, 255, 255);" transform="matrix(1, 0, 0, 0.999996, -541.157421, -138.489291)" cx="549.8" cy="168.19" r="3.69"/>
+</svg>

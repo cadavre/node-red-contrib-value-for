@@ -42,12 +42,30 @@ Values are compared as strings! Therefor you can choose to make case (in)sensiti
 
 ![value-for node](https://github.com/cadavre/node-red-contrib-value-for/raw/master/images/value-for.png)
 
+### fixed-for
+
+This node compares current value on input with previous value sent to input. If value won't change `for`
+given period of time – node will trigger first output.
+
+Normally this node waits for first input message to start comparison timer. You can optinally select to
+start comparison timer on node (re)deployment, so if no message at all will hit node input – it will also
+trigger first output. This is helpful for critical messages that must be compared even on i.e. NodeRED restart.
+
+Values are compared as strings! Therefor you can choose to make case (in)sensitive matching.
+
+![fixed-for node](https://github.com/cadavre/node-red-contrib-value-for/raw/master/images/fixed-for.png)
+
 ### Generic options
 
 You can configure nodes to report just once after the range/value matched configuration or report continously starting new timers
 each time a value confirming match in range/value is incoming as input. New timer will start only if new message comes in!
 
 ## Changelog
+
+#### 0.3.0
+
+* Added `fixed-for` node.
+* Small typo fixes.
 
 #### 0.2.2
 

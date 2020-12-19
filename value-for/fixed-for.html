@@ -1,14 +1,10 @@
 <script type="text/javascript">
-    RED.nodes.registerType('value-for', {
+    RED.nodes.registerType('fixed-for', {
         category: 'function',
         color: '#E6E0F8',
         defaults: {
             name: {
                 value: ""
-            },
-            value: {
-                value: "",
-                required: true
             },
             casesensitive: {
                 value: false
@@ -24,33 +20,30 @@
             },
             continuous: {
                 value: false
+            },
+            ondeploy: {
+                value: false
             }
         },
         inputs: 1,
         outputs: 2,
-        icon: "value-for.png",
+        icon: "fixed-for.png",
         label: function() {
             if (this.name) {
                 return this.name;
-            } else if (this.value) {
-                return this.value + ' for ' + this.for + this.units;
             } else {
-                return 'value for ' + this.for + this.units;
+                return 'fixed for ' + this.for + this.units;
             }
         },
         outputLabels: ["matched", "not mached"],
-        paletteLabel: "value for"
+        paletteLabel: "fixed for"
     });
 </script>
 
-<script type="text/x-red" data-template-name="value-for">
+<script type="text/x-red" data-template-name="fixed-for">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-value"><img src="red/images/typedInput/az.svg" style="margin-right: 4px;height: 18px;"> Value</label>
-        <input type="text" id="node-input-value" placeholder="value">
     </div>
     <div class="form-row">
         <input type="checkbox" id="node-input-casesensitive" style="display: inline-block; width: auto; vertical-align: top;">
@@ -70,18 +63,24 @@
         <input type="checkbox" id="node-input-continuous" style="display: inline-block; width: auto; vertical-align: top;">
         <label style="width: auto;" for="node-input-continuous">Trigger for continuous <code>for</code> periods in value.</label></input>
     </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-ondeploy" style="display: inline-block; width: auto; vertical-align: top;">
+        <label style="width: auto;" for="node-input-ondeploy">Start timer on node (re)deployment.</label></input>
+    </div>
 </script>
 
 <script type="text/x-red" data-help-name="value-for">
     <p>This node listens to string values in <code>msg.payload</code> input.
-    If reported value is same as configured for defined amount of time –
+    If reported value is unchanged (fixed) for defined amount of time –
     reports a <code>msg.payload: "trigger"</code> (just once) on first output.</p>
     <p>Node accepts any values but comparison is made between strings.
     Comparison can be made in case sensitive manner.</p>
-    <p>Any excursion for value will reset the timer – that reports
+    <p>Any change of value will reset the timer – that reports
     a <code>msg.payload: "reset"</code> to second output.</p>
     <p>Sending <code>msg.payload: "reset"</code> will reset timer,
     also triggering second output.</p>
     <p>Can trigger for continuous <code>for</code> periods if value doesn't change
     or just once.</p>
+    <p>Normally this node waits for first input message to start a timer.
+    Optionally timer can be started as soon as on node (re)deployment.</p>
 </script>

@@ -4,11 +4,12 @@
     "author": "Seweryn Zeman <seweryn.zeman@gmail.com>",
     "description": "A Node-RED node to report if sensor stream values are in given value or range for defined time.",
     "repository": "cadavre/node-red-contrib-value-for",
-    "keywords": ["node-red", "above", "below", "range", "value", "threshold", "for", "period"],
+    "keywords": ["node-red", "above", "below", "range", "value", "threshold", "for", "period", "unchanged"],
     "node-red": {
         "nodes": {
             "range-for": "value-for/range-for.js",
-            "value-for": "value-for/value-for.js"
+            "value-for": "value-for/value-for.js",
+            "fixed-for": "value-for/fixed-for.js"
         }
     }
 }
