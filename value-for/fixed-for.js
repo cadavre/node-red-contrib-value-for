@@ -66,19 +66,15 @@ module.exports = function(RED) {
                     currentValue = currentValue.toLowerCase();
                 }
                 if (currentValue !== '') {
-                    console.log('currentValue:'+currentValue+' lastValue:'+node.lastValue);
                     if (currentValue === node.lastValue || node.lastValue === null) {
-                        console.log('matched');
                         node.valueMatched = true;
                     } else {
                         node.valueMatched = false;
                     }
                     node.lastValue = currentValue;
                     if (node.valueMatched) {
-                        console.log('setTimer');
                         setTimer();
                     } else {
-                        console.log('clearTimer');
                         clearTimer();
                     }
                 }
