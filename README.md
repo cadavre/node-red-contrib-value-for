@@ -62,7 +62,7 @@ each time a value confirming match in range/value is incoming as input. New time
 
 ## Changelog
 
-#### 0.3.1
+#### 0.3.2
 
 * Removed console.logs
 
