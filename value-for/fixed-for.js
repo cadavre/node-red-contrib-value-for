@@ -60,23 +60,23 @@ module.exports = function(RED) {
             if (msg.hasOwnProperty('payload')) {
                 if (msg.payload === 'reset') {
                     clearTimer(true);
+                    return;
                 }
                 var currentValue = String(msg.payload);
                 if (!config.casesensitive) {
                     currentValue = currentValue.toLowerCase();
                 }
-                if (currentValue !== '') {
-                    if (currentValue === node.lastValue || node.lastValue === null) {
-                        node.valueMatched = true;
-                    } else {
-                        node.valueMatched = false;
-                    }
-                    node.lastValue = currentValue;
-                    if (node.valueMatched) {
-                        setTimer();
-                    } else {
-                        clearTimer();
-                    }
+                if (currentValue === node.lastValue) {
+                    node.valueMatched = true;
+                } else {
+                    node.valueMatched = false;
+                }
+                node.lastValue = currentValue;
+                if (node.valueMatched) {
+                    setTimer();
+                } else {
+                    clearTimer();
+                    setTimer();
                 }
             }
         });

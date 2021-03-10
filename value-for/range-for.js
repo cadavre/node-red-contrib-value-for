@@ -58,6 +58,7 @@ module.exports = function(RED) {
             if (msg.hasOwnProperty('payload')) {
                 if (msg.payload === 'reset') {
                     clearTimer(true);
+                    return;
                 }
                 var currentValue = Number(msg.payload);
                 if (!isNaN(currentValue)) {

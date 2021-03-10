@@ -59,6 +59,7 @@ module.exports = function(RED) {
             if (msg.hasOwnProperty('payload')) {
                 if (msg.payload === 'reset') {
                     clearTimer(true);
+                    return;
                 }
                 var currentValue = String(msg.payload);
                 if (!config.casesensitive) {
