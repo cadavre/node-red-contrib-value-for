@@ -20,7 +20,7 @@ module.exports = function(RED) {
                 clearTimeout(node.timeout);
                 node.timeout = null;
                 node.valueInRange = false;
-                var msg = {
+                const msg = {
                     reset: 1,
                     payload: node.lastValue
                 }
@@ -37,21 +37,21 @@ module.exports = function(RED) {
         }
 
         function timerFn() {
-            var msg = {
+            const msg = {
                 payload: node.lastValue
             }
             node.send([msg, null]);
-            node.status({fill: "green", shape: "dot", text: `${node.lastValue} ${getFormattedNow()}`});
+            node.status({fill: "green", shape: "dot", text: `${node.lastValue} ${getFormattedNow('since')}`});
             if (config.continuous) {
                 node.timeout = null;
             }
         }
 
-        function getFormattedNow() {
-            var now = new Date();
+        function getFormattedNow(prefix = 'at') {
+            const now = new Date();
             const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', hour12: false, hour: 'numeric', minute: 'numeric' });
             const [{ value: month },,{ value: day },,{ value: hour },,{ value: minute }] = dateTimeFormat.formatToParts(now);
-            return `at: ${month} ${day}, ${hour}:${minute}`;
+            return `${prefix}: ${month} ${day}, ${hour}:${minute}`;
         }
 
         this.on('input', function(msg) {
@@ -60,7 +60,7 @@ module.exports = function(RED) {
                     clearTimer(true);
                     return;
                 }
-                var currentValue = Number(msg.payload);
+                let currentValue = Number(msg.payload);
                 if (!isNaN(currentValue)) {
                     if (config.below !== null && config.above !== null) {
                         if (currentValue > config.above && currentValue < config.below) {

@@ -62,6 +62,14 @@ each time a value confirming match in range/value is incoming as input. New time
 
 ## Changelog
 
+#### 0.3.4
+
+* Improved node status texts
+
+#### 0.3.3
+
+* Fixed fixedfor for empty string and null values 
+
 #### 0.3.2
 
 * Removed console.logs

@@ -21,7 +21,7 @@ module.exports = function(RED) {
             if (node.timeout !== null) {
                 clearTimeout(node.timeout);
                 node.timeout = null;
-                var msg = {
+                const msg = {
                     reset: 1,
                     payload: node.lastValue
                 }
@@ -38,21 +38,21 @@ module.exports = function(RED) {
         }
 
         function timerFn() {
-            var msg = {
+            const msg = {
                 payload: node.lastValue
             }
             node.send([msg, null]);
-            node.status({fill: "green", shape: "dot", text: `${node.lastValue} ${getFormattedNow()}`});
+            node.status({fill: "green", shape: "dot", text: `${node.lastValue} ${getFormattedNow('since')}`});
             if (config.continuous) {
                 node.timeout = null;
             }
         }
 
-        function getFormattedNow() {
-            var now = new Date();
+        function getFormattedNow(prefix = 'at') {
+            const now = new Date();
             const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', hour12: false, hour: 'numeric', minute: 'numeric' });
             const [{ value: month },,{ value: day },,{ value: hour },,{ value: minute }] = dateTimeFormat.formatToParts(now);
-            return `at: ${month} ${day}, ${hour}:${minute}`;
+            return `${prefix}: ${month} ${day}, ${hour}:${minute}`;
         }
 
         this.on('input', function(msg) {
@@ -61,7 +61,7 @@ module.exports = function(RED) {
                     clearTimer(true);
                     return;
                 }
-                var currentValue = String(msg.payload);
+                let currentValue = String(msg.payload);
                 if (!config.casesensitive) {
                     currentValue = currentValue.toLowerCase();
                 }
