@@ -5,13 +5,14 @@ module.exports = function(RED) {
         this.timeout = null;
         this.valueInRange = false;
         this.lastValue = null;
+        this.orignalMsg = null;
 
-        if (config.units == "s") { config.for = config.for * 1000; }
-        if (config.units == "min") { config.for = config.for * 1000 * 60; }
-        if (config.units == "hr") { config.for = config.for * 1000 * 60 * 60; }
+        if (config.units === "s") { config.for = config.for * 1000; }
+        if (config.units === "min") { config.for = config.for * 1000 * 60; }
+        if (config.units === "hr") { config.for = config.for * 1000 * 60 * 60; }
 
-        if (config.below == "") { config.below = null; } else { config.below = Number(config.below) }
-        if (config.above == "") { config.above = null; } else { config.above = Number(config.above) }
+        if (config.below === "") { config.below = null; } else { config.below = Number(config.below) }
+        if (config.above === "") { config.above = null; } else { config.above = Number(config.above) }
 
         let node = this;
 
@@ -21,26 +22,33 @@ module.exports = function(RED) {
                 node.timeout = null;
                 node.valueInRange = false;
                 const msg = {
+                    ...node.orignalMsg,
                     reset: 1,
-                    payload: node.lastValue
                 }
                 node.send([null, msg]);
             }
+            node.orignalMsg = null;
             node.status({fill: "grey", shape: "dot", text: `${isReset ? 'reset' : node.lastValue} ${getFormattedNow()}`});
         }
 
-        function setTimer() {
+        function matched(originalMsg) {
+            // Start timer (if not yet started)
             if (node.timeout === null) {
                 node.timeout = setTimeout(timerFn, config.for);
                 node.status({fill: "green", shape: "ring", text: `${node.lastValue} ${getFormattedNow()}`});
             }
+            // Store original message (first or latest)
+            if (config.keepfirstmsg) {
+                if (!node.orignalMsg) {
+                    node.orignalMsg = originalMsg;
+                }
+            } else {
+                node.orignalMsg = originalMsg;
+            }
         }
 
         function timerFn() {
-            const msg = {
-                payload: node.lastValue
-            }
-            node.send([msg, null]);
+            node.send([node.orignalMsg, null]);
             node.status({fill: "green", shape: "dot", text: `${node.lastValue} ${getFormattedNow('since')}`});
             if (config.continuous) {
                 node.timeout = null;
@@ -60,8 +68,10 @@ module.exports = function(RED) {
                     clearTimer(true);
                     return;
                 }
+                // Prepare current payload for comparion
                 let currentValue = Number(msg.payload);
                 if (!isNaN(currentValue)) {
+                    // Compare values
                     if (config.below !== null && config.above !== null) {
                         if (currentValue > config.above && currentValue < config.below) {
                             node.valueInRange = true;
@@ -85,8 +95,9 @@ module.exports = function(RED) {
                         }
                     }
                     node.lastValue = currentValue;
+                    // Act
                     if (node.valueInRange) {
-                        setTimer();
+                        matched(msg);
                     } else {
                         clearTimer();
                     }

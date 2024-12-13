@@ -25,7 +25,10 @@
             },
             continuous: {
                 value: false
-            }
+            },
+            keepfirstmsg: {
+                value: false
+            },
         },
         inputs: 1,
         outputs: 2,
@@ -74,6 +77,13 @@
     <div class="form-row">
         <input type="checkbox" id="node-input-continuous" style="display: inline-block; width: auto; vertical-align: top;">
         <label style="width: auto;" for="node-input-continuous">Trigger for continuous <code>for</code> periods in range.</label></input>
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-keepfirstmsg" style="display: inline-block; width: auto; vertical-align: top;">
+        <label style="width: auto;" for="node-input-keepfirstmsg">Keep first message.</label></input>
+        <div class="form-tips">
+            <span style="font-style: italic;">By default, the latest input message will be forwarded to the output. Select this checkbox to forward the very first message that matched the "value" instead.</span>
+        </div>
     </div>
 </script>
 
