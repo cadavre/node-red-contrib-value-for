@@ -75,6 +75,10 @@ module.exports = function(RED) {
                 if (!config.casesensitive) {
                     currentValue = currentValue.toLowerCase();
                 }
+                // On 1st-time deployment - make sure there is a `lastValue`
+                if (!node.lastValue) {
+                    node.lastValue = currentValue;
+                }
                 // Compare values
                 if (currentValue === node.lastValue) {
                     node.valueMatched = true;
