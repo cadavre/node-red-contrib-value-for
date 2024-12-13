@@ -23,7 +23,10 @@
             },
             ondeploy: {
                 value: false
-            }
+            },
+            keepfirstmsg: {
+                value: false
+            },
         },
         inputs: 1,
         outputs: 2,
@@ -66,6 +69,11 @@
     <div class="form-row">
         <input type="checkbox" id="node-input-ondeploy" style="display: inline-block; width: auto; vertical-align: top;">
         <label style="width: auto;" for="node-input-ondeploy">Start timer on node (re)deployment.</label></input>
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-keepfirstmsg" style="display: inline-block; width: auto; vertical-align: top;">
+        <label style="width: auto;" for="node-input-keepfirstmsg">Keep first message.</label></input>
+        <span style="font-style: italic;">By default, the latest input message will be forwarded to the output. Select this checkbox to forward the very first message that matched the "value" instead.</span>
     </div>
 </script>
 

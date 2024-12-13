@@ -5,6 +5,7 @@ module.exports = function(RED) {
         this.timeout = null;
         this.valueMatched = false;
         this.lastValue = null;
+        this.orignalMsg = null;
 
         if (config.units == "s") { config.for = config.for * 1000; }
         if (config.units == "min") { config.for = config.for * 1000 * 60; }
@@ -17,8 +18,8 @@ module.exports = function(RED) {
                 clearTimeout(node.timeout);
                 node.timeout = null;
                 const msg = {
+                    ...node.orignalMsg,
                     reset: 1,
-                    payload: node.lastValue
                 }
                 node.send([null, msg]);
             }
@@ -35,10 +36,7 @@ module.exports = function(RED) {
         function timerFn() {
             clearTimeout(node.timeout);
             node.timeout = null;
-            const msg = {
-                payload: node.lastValue
-            }
-            node.send([msg, null]);
+            node.send([node.orignalMsg, null]);
             node.status({fill: "green", shape: "dot", text: `${node.lastValue} ${getFormattedNow('since')}`});
             if (config.continuous) {
                 setTimer();
@@ -62,16 +60,27 @@ module.exports = function(RED) {
                     clearTimer(true);
                     return;
                 }
+                // Store original message (first or latest)
+                if (config.keepfirstmsg) {
+                    if (!node.orignalMsg) {
+                        node.orignalMsg = msg;
+                    }
+                } else {
+                    node.orignalMsg = msg;
+                }
+                // Prepare current payload for comparion
                 let currentValue = String(msg.payload);
                 if (!config.casesensitive) {
                     currentValue = currentValue.toLowerCase();
                 }
+                // Compare values
                 if (currentValue === node.lastValue) {
                     node.valueMatched = true;
                 } else {
                     node.valueMatched = false;
                 }
                 node.lastValue = currentValue;
+                // Act
                 if (node.valueMatched) {
                     setTimer();
                 } else {

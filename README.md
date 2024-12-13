@@ -38,7 +38,7 @@ with given `for` period. If incoming input values won't change from that value �
 
 Any input value different from configured value or input `msg.payload = "reset"` will reset the timer and trigger a second output once.
 
-Values are compared as strings! Therefor you can choose to make case (in)sensitive matching.
+**Values are compared as strings!** Therefor you can choose to make case (in)sensitive matching.
 
 ![value-for node](https://github.com/cadavre/node-red-contrib-value-for/raw/master/images/value-for.png)
 
@@ -51,7 +51,7 @@ Normally this node waits for first input message to start comparison timer. You 
 start comparison timer on node (re)deployment, so if no message at all will hit node input – it will also
 trigger first output. This is helpful for critical messages that must be compared even on i.e. NodeRED restart.
 
-Values are compared as strings! Therefor you can choose to make case (in)sensitive matching.
+**Values are compared as strings!** Therefor you can choose to make case (in)sensitive matching.
 
 ![fixed-for node](https://github.com/cadavre/node-red-contrib-value-for/raw/master/images/fixed-for.png)
 
@@ -61,6 +61,11 @@ You can configure nodes to report just once after the range/value matched config
 each time a value confirming match in range/value is incoming as input. New timer will start only if new message comes in!
 
 ## Changelog
+
+#### 0.3.5
+
+* Instead of just latest value – a whole original msg will be forwarded to the output.
+* You can select if the very first message shall be forwarded or the latest one.
 
 #### 0.3.4
 
