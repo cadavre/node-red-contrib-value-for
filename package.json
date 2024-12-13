@@ -1,15 +1,33 @@
 {
     "name": "node-red-contrib-value-for",
-    "version": "0.3.5",
+    "version": "0.3.6",
+    "license": "Apache-2.0",
     "author": "Seweryn Zeman <seweryn.zeman@gmail.com>",
     "description": "A Node-RED node to report if sensor stream values are in given value or range for defined time.",
-    "repository": "cadavre/node-red-contrib-value-for",
-    "keywords": ["node-red", "above", "below", "range", "value", "threshold", "for", "period", "unchanged"],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/cadavre/node-red-contrib-value-for.git"
+    },
+    "keywords": [
+        "node-red",
+        "above",
+        "below",
+        "range",
+        "value",
+        "threshold",
+        "for",
+        "period",
+        "unchanged"
+    ],
     "node-red": {
+        "version": ">=2.0.0",
         "nodes": {
             "range-for": "value-for/range-for.js",
             "value-for": "value-for/value-for.js",
             "fixed-for": "value-for/fixed-for.js"
         }
+    },
+    "engines": {
+        "node": ">=12.0.0"
     }
 }
