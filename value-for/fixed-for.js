@@ -1,4 +1,4 @@
-import { reset, match, clearTimer } from './common';
+const { clearTimer, match, reset } = require('./common.js');
 
 module.exports = function(RED) {
 
