@@ -1,3 +1,5 @@
+import { reset, match, clearTimer } from './common';
+
 module.exports = function(RED) {
 
     function FixedForNode(config) {
@@ -13,61 +15,14 @@ module.exports = function(RED) {
 
         let node = this;
 
-        function clearTimer(isReset = false) {
-            if (node.timeout !== null) {
-                clearTimeout(node.timeout);
-                node.timeout = null;
-                const msg = {
-                    ...node.orignalMsg,
-                    reset: 1,
-                }
-                node.send([null, msg]);
-            }
-            node.orignalMsg = null;
-            node.status({fill: "grey", shape: "dot", text: `${isReset ? 'reset' : node.lastValue} ${getFormattedNow()}`});
-        }
-
-        function matched(originalMsg) {
-            // Start timer (if not yet started)
-            if (node.timeout === null) {
-                node.timeout = setTimeout(timerFn, config.for);
-                node.status({fill: "green", shape: "ring", text: `${node.lastValue} ${getFormattedNow()}`});
-            }
-            // Store original message (first or latest)
-            if (config.keepfirstmsg) {
-                if (!node.orignalMsg) {
-                    node.orignalMsg = originalMsg;
-                }
-            } else {
-                node.orignalMsg = originalMsg;
-            }
-        }
-
-        function timerFn() {
-            clearTimeout(node.timeout);
-            node.timeout = null;
-            node.send([node.orignalMsg, null]);
-            node.status({fill: "green", shape: "dot", text: `${node.lastValue} ${getFormattedNow('since')}`});
-            if (config.continuous) {
-                matched(node.orignalMsg);
-            }
-        }
-
-        function getFormattedNow(prefix = 'at') {
-            const now = new Date();
-            const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', hour12: false, hour: 'numeric', minute: 'numeric' });
-            const [{ value: month },,{ value: day },,{ value: hour },,{ value: minute }] = dateTimeFormat.formatToParts(now);
-            return `${prefix}: ${month} ${day}, ${hour}:${minute}`;
-        }
-
         if (config.ondeploy) {
-            matched({ payload: null });
+            match(node, config, { payload: null });
         }
 
         this.on('input', function(msg) {
             if (msg.hasOwnProperty('payload')) {
                 if (msg.payload === 'reset') {
-                    clearTimer(true);
+                    reset(node, true);
                     return;
                 }
                 // Prepare current payload for comparion
@@ -88,16 +43,16 @@ module.exports = function(RED) {
                 node.lastValue = currentValue;
                 // Act
                 if (node.valueMatched) {
-                    matched(msg);
+                    match(node, config, msg);
                 } else {
-                    clearTimer();
-                    matched(msg);
+                    clearTimer(node);
+                    match(node, config, msg);
                 }
             }
         });
 
         this.on('close', function() {
-            clearTimer();
+            clearTimer(node);
         });
     }
     RED.nodes.registerType('fixed-for', FixedForNode);

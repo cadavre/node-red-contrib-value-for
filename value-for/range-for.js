@@ -1,9 +1,11 @@
+import { reset, match, clearTimer } from './common';
+
 module.exports = function(RED) {
 
     function RangeForNode(config) {
         RED.nodes.createNode(this, config);
         this.timeout = null;
-        this.valueInRange = false;
+        this.valueMatched = false;
         this.lastValue = null;
         this.orignalMsg = null;
 
@@ -16,56 +18,10 @@ module.exports = function(RED) {
 
         let node = this;
 
-        function clearTimer(isReset = false) {
-            if (node.timeout !== null) {
-                clearTimeout(node.timeout);
-                node.timeout = null;
-                node.valueInRange = false;
-                const msg = {
-                    ...node.orignalMsg,
-                    reset: 1,
-                }
-                node.send([null, msg]);
-            }
-            node.orignalMsg = null;
-            node.status({fill: "grey", shape: "dot", text: `${isReset ? 'reset' : node.lastValue} ${getFormattedNow()}`});
-        }
-
-        function matched(originalMsg) {
-            // Start timer (if not yet started)
-            if (node.timeout === null) {
-                node.timeout = setTimeout(timerFn, config.for);
-                node.status({fill: "green", shape: "ring", text: `${node.lastValue} ${getFormattedNow()}`});
-            }
-            // Store original message (first or latest)
-            if (config.keepfirstmsg) {
-                if (!node.orignalMsg) {
-                    node.orignalMsg = originalMsg;
-                }
-            } else {
-                node.orignalMsg = originalMsg;
-            }
-        }
-
-        function timerFn() {
-            node.send([node.orignalMsg, null]);
-            node.status({fill: "green", shape: "dot", text: `${node.lastValue} ${getFormattedNow('since')}`});
-            if (config.continuous) {
-                node.timeout = null;
-            }
-        }
-
-        function getFormattedNow(prefix = 'at') {
-            const now = new Date();
-            const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', hour12: false, hour: 'numeric', minute: 'numeric' });
-            const [{ value: month },,{ value: day },,{ value: hour },,{ value: minute }] = dateTimeFormat.formatToParts(now);
-            return `${prefix}: ${month} ${day}, ${hour}:${minute}`;
-        }
-
         this.on('input', function(msg) {
             if (msg.hasOwnProperty('payload')) {
                 if (msg.payload === 'reset') {
-                    clearTimer(true);
+                    reset(node, true);
                     return;
                 }
                 // Prepare current payload for comparion
@@ -73,40 +29,43 @@ module.exports = function(RED) {
                 if (!isNaN(currentValue)) {
                     // Compare values
                     if (config.below !== null && config.above !== null) {
+                        // Above AND below set
                         if (currentValue > config.above && currentValue < config.below) {
-                            node.valueInRange = true;
+                            node.valueMatched = true;
                         } else {
-                            node.valueInRange = false;
+                            node.valueMatched = false;
                         }
                     } else {
+                        // ONLY below set
                         if (config.below !== null) {
                             if (currentValue < config.below) {
-                                node.valueInRange = true;
+                                node.valueMatched = true;
                             } else {
-                                node.valueInRange = false;
+                                node.valueMatched = false;
                             }
                         }
+                        // ONLY above set
                         if (config.above !== null) {
                             if (currentValue > config.above) {
-                                node.valueInRange = true;
+                                node.valueMatched = true;
                             } else {
-                                node.valueInRange = false;
+                                node.valueMatched = false;
                             }
                         }
                     }
                     node.lastValue = currentValue;
                     // Act
-                    if (node.valueInRange) {
-                        matched(msg);
+                    if (node.valueMatched) {
+                        match(node, config, msg);
                     } else {
-                        clearTimer();
+                        reset(node);
                     }
                 }
             }
         });
 
         this.on('close', function() {
-            clearTimer();
+            clearTimer(node);
         });
     }
     RED.nodes.registerType('range-for', RangeForNode);
