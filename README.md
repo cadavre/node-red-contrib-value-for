@@ -51,6 +51,9 @@ Normally this node waits for first input message to start comparison timer. You 
 start comparison timer on node (re)deployment, so if no message at all will hit node input – it will also
 trigger first output. This is helpful for critical messages that must be compared even on i.e. NodeRED restart.
 
+**Watch out!** When using timer since (re)deployment – if no message was received in the input – the output message
+will be `{ payload: null }`. Make sure your flow can handle this situation correctly!
+
 **Values are compared as strings!** Therefor you can choose to make case (in)sensitive matching.
 
 ![fixed-for node](https://github.com/cadavre/node-red-contrib-value-for/raw/master/images/fixed-for.png)

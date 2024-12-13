@@ -7,9 +7,9 @@ module.exports = function(RED) {
         this.lastValue = null;
         this.orignalMsg = null;
 
-        if (config.units == "s") { config.for = config.for * 1000; }
-        if (config.units == "min") { config.for = config.for * 1000 * 60; }
-        if (config.units == "hr") { config.for = config.for * 1000 * 60 * 60; }
+        if (config.units === "s") { config.for = config.for * 1000; }
+        if (config.units === "min") { config.for = config.for * 1000 * 60; }
+        if (config.units === "hr") { config.for = config.for * 1000 * 60 * 60; }
 
         config.value = String(config.value)
         if (!config.casesensitive) {
@@ -28,13 +28,23 @@ module.exports = function(RED) {
                 }
                 node.send([null, msg]);
             }
+            node.orignalMsg = null;
             node.status({fill: "grey", shape: "dot", text: `${isReset ? 'reset' : node.lastValue} ${getFormattedNow()}`});
         }
 
-        function setTimer() {
+        function matched(originalMsg) {
+            // Start timer (if not yet started)
             if (node.timeout === null) {
                 node.timeout = setTimeout(timerFn, config.for);
                 node.status({fill: "green", shape: "ring", text: `${node.lastValue} ${getFormattedNow()}`});
+            }
+            // Store original message (first or latest)
+            if (config.keepfirstmsg) {
+                if (!node.orignalMsg) {
+                    node.orignalMsg = originalMsg;
+                }
+            } else {
+                node.orignalMsg = originalMsg;
             }
         }
 
@@ -59,14 +69,6 @@ module.exports = function(RED) {
                     clearTimer(true);
                     return;
                 }
-                // Store original message (first or latest)
-                if (config.keepfirstmsg) {
-                    if (!node.orignalMsg) {
-                        node.orignalMsg = msg;
-                    }
-                } else {
-                    node.orignalMsg = msg;
-                }
                 // Prepare current payload for comparion
                 let currentValue = String(msg.payload);
                 if (!config.casesensitive) {
@@ -82,7 +84,7 @@ module.exports = function(RED) {
                     node.lastValue = currentValue;
                     // Act
                     if (node.valueMatched) {
-                        setTimer();
+                        matched(msg);
                     } else {
                         clearTimer();
                     }
