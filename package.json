@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-value-for",
-    "version": "0.4.0",
+    "version": "1.0.0",
     "license": "Apache-2.0",
     "author": "Seweryn Zeman <seweryn.zeman@gmail.com>",
     "description": "A Node-RED node to report if sensor stream values are in given value or range for defined time.",
@@ -20,7 +20,7 @@
         "unchanged"
     ],
     "node-red": {
-        "version": ">=2.0.0",
+        "version": ">=4.0.0",
         "nodes": {
             "range-for": "value-for/range-for.js",
             "value-for": "value-for/value-for.js",
@@ -28,6 +28,6 @@
         }
     },
     "engines": {
-        "node": ">=12.0.0"
+        "node": ">=20.0.0"
     }
 }

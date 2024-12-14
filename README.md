@@ -67,6 +67,11 @@ starting new timers each "for" time.
 
 ## Changelog
 
+#### 1.0.0
+
+* Code cleanup; extracted common part.
+* Fixed repeating when the value was not out-of-range/value and no "for" was selected.
+
 #### 0.4.0
 
 * Unified most of the code
