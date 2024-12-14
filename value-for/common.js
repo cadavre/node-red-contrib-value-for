@@ -40,8 +40,8 @@ const timerFn = function(node, config) {
     // Send 1st output message
     node.send([node.orignalMsg, null]);
     node.status({fill: "green", shape: "dot", text: `${node.lastValue} ${getFormattedNow('since')}`});
-    clearTimer(node);
     if (config.continuous) {
+        clearTimer(node);
         match(node, config, node.orignalMsg);
     }
 }
